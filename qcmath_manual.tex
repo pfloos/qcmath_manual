@@ -137,6 +137,10 @@
 \newcommand{\Om}{\Omega}
 \newcommand{\ERI}[2]{\mel{#1}{}{#2}}
 
+\newcommand{\hT}{\Hat{T}}
+\newcommand{\hH}{\Hat{H}}
+\newcommand{\hI}{\Hat{1}}
+
 \newcommand{\qcmath}{\textsc{qcmath}\xspace}
 \newcommand{\mathematica}{\textsc{mathematica}\xspace}
 \newcommand{\pyscf}{PySCF\xspace}
@@ -162,6 +166,7 @@
 
 \begin{abstract}
 In this work, we present a quantum chemistry software for electronic structure calculations based on the Wolfram Mathematica language. This software, named \qcmath, aims to take advantage of the powerful symbolic nature of Mathematica to help newcomers in quantum chemistry easily develop their ideas. 
+\PFL{Expand abstract.}
 \bigskip
 \begin{center}
 	\boxed{\includegraphics[width=0.25\linewidth]{TOC}}
@@ -237,9 +242,13 @@ For a comprehensive list of all available options, including charge, spin multip
 %%%%%%%%%%%%%%%%%%%%
 The \qcmath software is currently undergoing active development. The features discussed below are currently available, and they represent the initial roadmap for the software's future. This User Guide provides a comprehensive introduction to the underlying theoretical concepts and showcases the functionalities offered by these methods. \cite{SzaboBook,JensenBook,Helgakerbook,MartinBook,FetterBook} It serves as a valuable resource to gain insights into the theoretical background and explore the capabilities that will be incorporated into \qcmath as it continues to evolve.
 
+%=====================================
 \subsection{Ground-state calculations}
+%=====================================
 
+%-----------------------------------
 \subsubsection*{Hartree-Fock theory}
+%-----------------------------------
 In the context of the Hartree-Fock (HF) approximation, the electronic wave function is expressed as a Slater determinant comprising $N$ one-electron orbitals. \cite{SzaboBook} Within the restricted HF (RHF) formalism, the Roothaan-Hall equations come into play, given by $\FkMat \CMat = \SMat \CMat \MOevMat$. Here, $\FMat$ represents the Fock matrix, $\CMat$ denotes the matrix of orbital coefficients, $\SMat$ stands for the matrix representing atomic orbital overlaps, and $\MOevMat$ is a diagonal matrix containing the orbital energies.
 Since the Fock matrix relies on the orbital coefficients $\CMat$, which are obtained from the Fock matrix itself, these equations necessitate a self-consistent solution. To facilitate this process, various options can be specified to customize the calculations and achieve desired outcomes: 
 \begin{enumerate}
@@ -272,7 +281,9 @@ Two flavors of Hartree-Fock (HF) are available in qcmath: restricted HF (RHF) an
 	qcmath["H2","6-31g",{"UHF"}]
 \end{lstlisting}
 
+%-----------------------------------------------------
 \subsubsection*{M\o{}ller-Plesset perturbation theory}
+%-----------------------------------------------------
 The second-order M\o{}ller-Plesset (MP2) correlation energy is defined by 
 \begin{equation}
 	\EcMP = \frac{1}{4} \sum_{ij}^{\text{occ}} \sum_{ab}^{\text{vir}} \frac{ |\mel{ij}{}{ab}|^2 }{\eHF{i} + \eHF{j} - \eHF{a} - \eHF{b}}
@@ -291,13 +302,119 @@ Note that in the last case, a RHF is performed by default so if one wants to rel
 	qcmath["H2","6-31g",{"UHF","MP2"}]
 \end{lstlisting}
 
+%-------------------------------------------------
 \subsubsection*{Configuration interaction methods}
+%-------------------------------------------------
+One of the most conceptually simple (albeit expensive) approaches to recovering a large fraction of the correlation energy is the configuration interaction (CI) method. \cite{SzaboBook,JensenBook,HelgakerBook}
+The general idea is to expand the wave function as a linear combination of ``excited'' determinants.
+These excited determinants are built by promoting electrons from occupied to unoccupied (virtual) MOs usually based on the HF orbitals, i.e.
+\begin{multline} 
+\label{eq:Psi-CI}
+	\Psi_\text{CI}	= 					c_0 	\Psi_0 
+		+ \sum_i^{\text{occ}} \sum_a^{\text{virt}} 		c_{i}^{a} 	\Psi_{i}^{a} 
+		+ \sum_{ij}^{\text{occ}} \sum_{ab}^{\text{virt}} 	c_{ij}^{ab} 	\Psi_{ij}^{ab}
+		\\
+		+ \sum_{ijk}^{\text{occ}} \sum_{abc}^{\text{virt}}	c_{ijk}^{abc} 	\Psi_{ijk}^{abc}
+		+ \ldots
+\end{multline}
+where $\Psi_{i}^{a} $, $\Psi_{ij}^{ab}$ and $\Psi_{ijk}^{abc}$ are singly-, doubly- and triply-excited determinants.
+$\Psi_{ij}^{ab}$ corresponds to the excitations of two electrons from the occupied spinorbitals $i$ and $j$ to virtual spinorbitals $a$ and $b$. 
+It is easy to show that the CI energy
+\begin{equation}
+	E_\text{CI} = \frac{\mel{\Psi_\text{CI}}{\Hat{H}}{\Psi_\text{CI}}}{\braket{\Psi_\text{CI}}{\Psi_\text{CI}}}
+\end{equation}
+is an upper bound to the exact energy of the system.
 
+When all possible excitations are taken into account, the method is called full CI (FCI) and it recovers the entire correlation energy for a given basis set.
+Albeit elegant, FCI is very expensive due to the exponential increase of the number of excited determinants.
+For example, when only singles and doubles are taken into account, the method is called CISD. 
+It recovers an important chunk of the correlation.
+However, it has the disadvantage to be size-inconsistent.\footnote{A method is said to be size-consistent if the correlation energy of two non-interaction systems is egal to twice the correlation energy of the isolated system.
+Size-extensivity means that the correlation energy grows linearly with the system size.}
+
+%--------------------------------------
 \subsubsection*{Coupled-cluster theory}
+%--------------------------------------
+The coupled cluster (CC) family of methods is one of the most successful wave function approaches for the description of chemical systems.\cite{ShavittBook}  
+In particular, low-order truncated CC methods, such as CC with singles, doubles and perturbative triples CCSD(T), properly describe weak correlation, while inclusion of higher-order excitations is required for strongly correlated systems.
+
+In CC theory, the exponential excitation operator 
+\begin{equation}
+	e^{\hT} = \hI + \hT + \frac{\hT^2}{2!} + \frac{\hT^3}{3!} + \ldots,
+\end{equation}
+with 
+\begin{equation}
+	\hT = \sum_{n=1}^N \hT_n,
+\end{equation}
+(where $N$ is the number of electrons) acts on a (normalized) single Slater determinant $\ket{\Phi}$ [such as Hartree-Fock (HF)] to convert it into the exact wave function 
+\begin{equation}
+	\ket{\Psi} = e^{\hT} \ket{\Phi}.
+\end{equation}
+The $n$th excitation operator $\hT_n$ is defined, in second-quantized form, as
+\begin{equation}
+	\label{eq:T_k}
+	\hT_n = \frac{1}{(n!)^2} \sum_{ij\dots} \sum_{ab\dots} t_{ij\dots}^{ab\dots} c_a^{\dag} c_b^{\dag} \dots c_j c_i,
+\end{equation}
+where $c_i$ and $c_a^{\dag}$ are the usual annihilation and creation operators which annihilates an electron in the occupied spinorbital $i$ and creates an electron in the vacant spinorbital $a$, respectively.
+From here on, $i$, $j$, \ldots~are occupied spinorbitals, $a$, $b$, \ldots~denote virtual (unoccupied) spinorbitals, and $p$, $q$, $r$, and $s$ indicate arbitrary (orthonormal) spinorbitals.
+
+The Schr\"odinger equation then reads
+\begin{equation}
+	\hH e^{\hT} \ket{\Phi} = E e^{\hT} \ket{\Phi},
+\end{equation}
+which can be rewritten as 
+\begin{equation}
+	\Bar{H} \ket{\Phi} = E \ket{\Phi}
+\end{equation}
+by defining the effective (non-Hermitian) similarity-transformed Hamiltonian 
+\begin{equation}
+	\label{eq:bH}
+	\Bar{H} = e^{-\hT} \hH e^{\hT}.
+\end{equation}
+Although $\Bar{H}$ is non-Hermitian, the similarity transformation \eqref{eq:bH} ensures that $\Bar{H}$ has an energy spectrum that is identical to the original Hermitian operator $\hH$.
+Besides, the exponential structure of the wave operator ensures rigorous size-extensivity and is responsible for the comparative high accuracy of the theory at relatively low computational cost.
+The cluster amplitudes $t_{ij\dots}^{ab\dots}$ defined in Eq.~\eqref{eq:T_k} are the quantities to determine.
+
+Truncating $\hT$ to double excitations, \ie, $\hT = \hT_1 + \hT_2$ with 
+\begin{subequations}
+\begin{align}
+	\hT_1 & = \sum_{ia} t_{i}^{a} c_a^{\dag} c_i,
+        \\
+	\hT_2 & = \frac{1}{4} \sum_{ijab} t_{ij}^{ab} c_a^{\dag} c_b^{\dag} c_j c_i,
+\end{align}
+\end{subequations}
+defines CC with singles and doubles (CCSD) and one gets the single and double amplitudes, $t_{i}^{a}$ and $t_{ij}^{ab}$, via the amplitude equations
+\begin{subequations}
+\begin{align}
+	\label{eq:T1_eq}
+	\mel{\Phi_{i}^{a}}{\Bar{H}}{\Phi} & = 0,
+	\\
+	\label{eq:T2_eq}
+	\mel{\Phi_{ij}^{ab}}{\Bar{H}}{\Phi} & = 0.
+\end{align}
+\end{subequations}
+The (non-variational) CCSD energy is evaluated by projection,
+\begin{equation}
+	E_\text{CC} 
+	= \mel{\Phi}{\bH}{\Phi} 
+	= \frac{ \mel{\Phi}{ e^{-\hT} \hH e^{\hT} } {\Phi} }{ \mel{\Phi}{ e^{-\hT} e^{\hT} }{\Phi} },
+\end{equation}
+in contrast to its variational analog
+\begin{equation}
+	\label{eq:VCC}
+	E_\text{VCC}  
+	= \frac{\mel{\Phi}{e^{\hT^{\dag}} \hH e^{\hT}}{\Phi}}{\mel{\Phi}{e^{\hT^{\dag}} e^{\hT}}{\Phi}} 
+	\ge E_\text{FCI},
+\end{equation}
+(where the Rayleigh-Ritz variational principle has been used to determine the energy and the amplitudes) which is a true upper bound to the (exact) full configuration interaction (FCI) energy $E_\text{FCI}$. 
+Unfortunately, VCC is computationally intractable.
+Indeed, even for truncated CC methods such as CCSD, VCC has factorial complexity since the power series expansion of the VCC energy \eqref{eq:VCC} does not naturally truncate, i.e., does not terminate before the $N$-electron limit.
 
 
+%===============================
 \subsection{Charged excitations}
 \label{sec:charged_excitations}
+%===============================
 Methods based on the one-body Green's function offer a means to describe charged excitations, namely, the ionization potentials (IPs) and electron affinities (EAs) of a system. This particular aspect forms the heart of qcmath, with a diverse range of methods, approximations, and options available. To ensure clarity and coherence, this section is organized as follows:
 Firstly, we provide a brief introduction to the general equations that depend on the degree of (partial) self-consistency. These general equations are shared among the three self-energy approximations implemented in qcmath: the second-order Green's function (GF2), the $GW$ approximation, and the $T$-matrix approximation. By outlining these common equations, we establish a foundational understanding of the framework.
 Subsequently, we present the specific expressions corresponding to each of the self-energy approximations. This breakdown allows for a comprehensive exploration of the distinct methodologies incorporated in qcmath, enabling users to leverage the most suitable approach for their research goals.
@@ -346,7 +463,9 @@ where $\nu$ runs overall solutions, quasiparticles, and satellites and with \cit
 \end{equation}
 Note that the different blocks will depend on the approximated self-energy. Now that the general equations have been set, we can turn to the self-energy approximations. Three different approximations are available in qcmath: the second-order Green's function (\GFtwo), the {\GW} approximation, and the T-matrix approximation. For each approximation the three partially self-consistent schemes and the upfolding process are available. Note also that, regularization parameters are available in qcmath.
  
+%-----------------------------------------------------------
 \subsubsection*{Second-order Green's function approximation}
+%-----------------------------------------------------------
 The {\GFtwo} correlation self-energy is closely related to MP2 and is given by the following expression
 \begin{equation}
 \label{eq:SigCGF2}
@@ -371,7 +490,9 @@ Example of a one-shot calculation
 \end{lstlisting}
 Note that here, an RHF calculation is done by default.
 
+%-----------------------------------
 \subsubsection*{{\GW} approximation}
+%-----------------------------------
 The $\GW$ correlation self-energy is given by
 \begin{equation}
 	\Sigm_{pq}^{\GW}(\omega) 
@@ -397,7 +518,9 @@ Example of an eigenvalue calculation
 \end{lstlisting}
 Note that here, an RHF calculation is done by default.
 
+%--------------------------------------
 \subsubsection*{T-matrix approximation}
+%--------------------------------------
 The T-matrix correlation self-energy is given by
 \begin{equation}
 	\Sigm_{pq}^{\GT}(\omega) 
@@ -430,14 +553,18 @@ Example of a quasiparticle calculation
 \end{lstlisting}
 Note that here, an RHF calculation is done by default.
 
+%===============================
 \subsection{Neutral excitations}
+%===============================
 
 Within qcmath, the computation of excitation energies utilizes methods formulated as a Casida-like equation.\cite{Casida_2005} This equation is an eigenvalue equation that serves as a fundamental component in linear response theory. It plays a pivotal role in various approaches, including time-dependent density functional theory (TD-DFT), \cite{UlrichBook} the random phase approximation (RPA), and the Bethe-Salpeter equation (BSE). \cite{MartinBook}
 In this section, we begin by exploring the RPA method and distinguishing between different variations within this framework. By examining these different flavors of the RPA method, we gain insights into their unique characteristics and applicability.
 Subsequently, we delve into the discussion of the BSE method. This method represents another important approach for computing excitation energies, with its distinct theoretical foundations and computational considerations. By exploring the BSE method, users can gain a comprehensive understanding of its principles and its role within qcmath. Note that when the spatial orbital implementation of a method is available, then we can use the \keyword{"singlet"} and/or \keyword{"triplet"} keywords to compute only singlet and/or triplet states.
 
+%--------------------------------------------------------
 \subsubsection*{Particle-hole random-phase approximation}
 \label{subsec:ph-RPA}
+%--------------------------------------------------------
 
 The traditional RPA can be found under different names like RPAx or ph-RPA. We choose to call it ph-RPA to make the difference with the particle-particle RPA (pp-RPA). The ph-RPA problem takes the form of the following Casida-like equation 
 \begin{multline}
@@ -489,8 +616,10 @@ Keywords for the method argument need to be specified for the different approach
 \end{itemize}
 The option \keyword{"TDA"} can be set to \keyword{True}, by default \keyword{"TDA"=False}.
 
+%--------------------------------------------------------
 \subsubsection*{Particle-particle random-phase approximation}
 \label{subsec:pp-RPA}
+%--------------------------------------------------------
 
 The particle-particle RPA (pp-RPA) problem considers the excitation energies of the $N+2$ and $N-2$ system (with $N$ the number of electrons). It is also defined by a slightly different eigenvalue problem than ph-RPA:
 \begin{multline}
@@ -539,7 +668,9 @@ The $\bX^{\pp/\hh}$ and $\bY^{\pp/\hh}$ are the double addition/removal transiti
 \end{equation}
 The keyword to use the pp-RPA is \keyword{pp-RPA}. Note that TDA is also available with the option \keyword{"TDA"=True}.
 
+%---------------------------------------
 \subsubsection*{Bethe-Salpeter equation}
+%---------------------------------------
 The Bethe-Salpeter equation (BSE) is related to the two-body Green's function. The central quantity is the so-called BSE kernel defined as the functional derivative of the self-energy with respect to $G$. As exposed in Section~\ref{sec:charged_excitations}, there are several approximations of the self-energy and each one of them leads to a different BSE approximation. The common central equation is the following eigenvalue equation
 \begin{equation}
     \begin{pmatrix}
