@@ -137,6 +137,10 @@
 \newcommand{\Om}{\Omega}
 \newcommand{\ERI}[2]{\mel{#1}{}{#2}}
 
+\newcommand{\qcmath}{\textsc{qcmath}\xspace}
+\newcommand{\mathematica}{\textsc{mathematica}\xspace}
+\newcommand{\pyscf}{PySCF\xspace}
+
 \newcommand{\keyword}[1]{{\colorbox{lightgray}{\texttt{#1}}}}
 
 % addresses
@@ -144,127 +148,157 @@
 
 \begin{document}	
 
-\title{qcmath: Mathematica modules for electronic structure calculations}
+\title{\textsc{qcmath}: Mathematica modules for electronic structure calculations}
+
+\author{Enzo \surname{Monino}}
+	\email{emonino@irsamc.ups-tlse.fr}
+	\affiliation{\LCPQ}
+\author{Antoine \surname{Marie}}
+	\email{amarie@irsamc.ups-tlse.fr}
+	\affiliation{\LCPQ}
+\author{Pierre-Fran\c{c}ois \surname{Loos}}
+	\email{loos@irsamc.ups-tlse.fr}
+	\affiliation{\LCPQ}
 
 \begin{abstract}
-In this work, we present a quantum chemistry software for electronic structure calculations based on the Wolfram Mathematica language. This software aims to take advantage of the powerful symbolic nature of Mathematica to help newcomers in quantum chemistry easily develop their ideas. 
+In this work, we present a quantum chemistry software for electronic structure calculations based on the Wolfram Mathematica language. This software, named \qcmath, aims to take advantage of the powerful symbolic nature of Mathematica to help newcomers in quantum chemistry easily develop their ideas. 
+\bigskip
+\begin{center}
+	\boxed{\includegraphics[width=0.25\linewidth]{TOC}}
+\end{center}
+\bigskip
 \end{abstract}
 
 \maketitle
 
+%%%%%%%%%%%%%%%%%%%%%%
 \section{Introduction}
-Quantum chemistry methods are highly compatible with computer utilization, owing to the matrix formulation of quantum mechanics, which leverages the power of linear algebra packages like \href{https://www.netlib.org/blas/}{BLAS} and \href{https://www.netlib.org/lapack/}{LAPACK}. As a result, a wide array of quantum chemistry software is currently available, encompassing both free and commercial options. These software packages cater to specific methods or offer a diverse range of methodologies, utilizing various types of basis functions, among other features. A considerable number of quantum chemistry codes exist, covering a comprehensive range of methods. For a comprehensive list of these codes, refer to \href{https://en.wikipedia.org/wiki/List_of_quantum_chemistry_and_solid-state_physics_software}{Wikipedia's page on quantum chemistry and solid-state physics software}.
+%%%%%%%%%%%%%%%%%%%%%%
+Quantum chemistry methods are highly compatible with computer utilization, owing to the matrix formulation of quantum mechanics, which leverages the power of linear algebra packages like \href{https://www.netlib.org/blas/}{BLAS} and \href{https://www.netlib.org/lapack/}{LAPACK}. As a result, a wide array of quantum chemistry software is currently available, encompassing both free and commercial options. These software packages cater to specific methods or offer a diverse range of methodologies, utilizing various types of basis functions, among other features. A considerable number of quantum chemistry codes exist, covering a comprehensive range of methods. For a comprehensive list of these codes, refer to \href{https://en.wikipedia.org/wiki/List_of_quantum_chemistry_and_solid-state_physics_software}{Wikipedia's page} on quantum chemistry and solid-state physics software.
 
-Regrettably, despite the efficient design of many of these software packages, they can be challenging to comprehend as they often employ low-level programming languages. Moreover, these programs are not primarily intended for educational purposes or for facilitating understanding. This is precisely where qcmath comes into play. qcmath aims to assist newcomers in the field of quantum chemistry by providing a user-friendly platform for developing ideas and codes. It is worth noting that certain software packages utilize higher-level programming languages, which can enhance code comprehension. As for qcmath, it is a compilation of Mathematica modules specifically designed for conducting electronic structure calculations.
+Regrettably, despite the efficient design of many of these software packages, they can be challenging to comprehend as they often employ low-level programming languages. Moreover, these programs are not primarily intended for educational purposes or for facilitating understanding. This is precisely where \qcmath comes into play. \qcmath aims to assist newcomers in the field of quantum chemistry by providing a user-friendly platform for developing ideas and codes. It is worth noting that certain software packages utilize higher-level programming languages, which can enhance code comprehension. As for \qcmath, it is a compilation of \href{https://www.wolfram.com/mathematica/}{\mathematica} modules specifically designed for conducting electronic structure calculations.
 
-Before delving into the specifics of qcmath, let us provide an overview of the Mathematica environment. Mathematica is a comprehensive software system developed by Wolfram Research, initially conceptualized by Stephen Wolfram. It boasts a wide range of built-in libraries that can be utilized for diverse purposes. One of its key strengths lies in its ability to perform computer algebra operations, such as derivatives, integrals, and expression simplifications. Furthermore, Mathematica enables the numerical evaluation of these expressions. Another notable feature is its advanced plotting capabilities, supporting intricate visualizations of functions in one, two, and three dimensions. Numerous books offer extensive examples of Mathematica's applications across various domains. With its versatility, Mathematica has become a powerful tool employed in numerous scientific fields, including education, research, and industry.
+Before delving into the specifics of \qcmath, let us provide an overview of the \mathematica environment. \mathematica is a comprehensive software system developed by Wolfram Research, initially conceptualized by Stephen Wolfram. It boasts a wide range of built-in libraries that can be utilized for diverse purposes. One of its key strengths lies in its ability to perform computer algebra operations, such as derivatives, integrals, and expression simplifications. Furthermore, \mathematica enables the numerical evaluation of these expressions. Another notable feature is its advanced plotting capabilities, supporting intricate visualizations of functions in one, two, and three dimensions. Numerous books offer extensive examples of \mathematica's applications across various domains. With its versatility, \mathematica has become a powerful tool employed in numerous scientific fields, including education, research, and industry.
 
-Mathematica comprises two main components: the kernel and the front end. The kernel interprets expressions and generates result expressions, which can then be displayed using the front end. The original front end takes the form of a notebook interface, facilitating the creation and editing of notebook documents that can contain code, plaintext, images, and graphics. qcmath, specifically, relies on these notebook documents. It is important to note that qcmath is not primarily designed for computational efficiency but rather focuses on providing a user-friendly environment.
+\mathematica comprises two main components: the kernel and the front end. The kernel interprets expressions and generates result expressions, which can then be displayed using the front end. The original front end takes the form of a notebook interface, facilitating the creation and editing of notebook documents that can contain code, plaintext, images, and graphics. \qcmath, specifically, relies on these notebook documents. It is important to note that \qcmath is \textbf{not} primarily designed for computational efficiency but rather focuses on providing a user-friendly environment.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Installation guide}
-The qcmath software can be downloaded on GitHub as a Git repository
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+The \qcmath software can be downloaded on \textsc{github} as a git repository
 \begin{tcolorbox}[colback=lightgray,colframe=white]
-\begin{equation*}
-\text{git clone https://github.com/LCPQ/qcmath.git}
-\end{equation*}
+	\begin{equation*}
+		\small
+		\texttt{git clone https://github.com/LCPQ/qcmath.git}
+	\end{equation*}
 \end{tcolorbox}
-Then, one must define the variable \keyword{QCMATH\_ROOT} and install PySCF using \keyword{pip}
+Then, one must define the variable \keyword{QCMATH\_ROOT} and install \href{https://pyscf.org}{\pyscf} using \keyword{pip}
 \begin{tcolorbox}[colback=lightgray,colframe=white]
-\begin{equation*}
-\text{pip install pyscf}
-\end{equation*}
+	\begin{equation*}
+		\texttt{pip install pyscf}
+	\end{equation*}
 \end{tcolorbox}
-PySCF is used for the computation of one- and two-electron integrals. Here is the list of the requirements to use qcmath:
+\pyscf is used for the computation of one- and two-electron integrals. Here is the list of the requirements to use \qcmath:
 \begin{itemize}
-\item Linux OS
-\item Wolfram Mathematica $\geq$ 12.1
-\item PySCF
-\item Python $\geq$ 3.6.0 
-\item Numpy $\geq$ 1.13
-\end{itemize}
-Note that the version of Python and Numpy is fixed by PySCF.
+	\item Linux or Mac OS
+	\item Wolfram Mathematica $\geq$ 12.1
+	\item \pyscf
+	\item Python $\geq$ 3.6.0 
+	\item Numpy $\geq$ 1.13
+	\end{itemize}
+Note that the version of Python and Numpy is fixed by \pyscf.
 
+%%%%%%%%%%%%%%%%%%%%%
 \section{Quick start}
-Before running any qcmath calculation, we need to define the working directory as 
+%%%%%%%%%%%%%%%%%%%%%
+Before running any \qcmath calculation, we need to define the working directory as 
 \begin{lstlisting}[extendedchars=true,language=Mathematica]
-SetDirectory[NotebookDirectory[]];
-path=Directory[];
-py="your_path_to_python"
-NotebookEvaluate[path<>"/src/Main/Main.nb"]
+	SetDirectory[NotebookDirectory[]];
+	path=Directory[];
+	py="your_path_to_python"
+	NotebookEvaluate[path<>"/src/Main/Main.nb"]
 \end{lstlisting}
 To streamline the execution of other notebooks and prevent the need for directory changes, the first line of code sets the working directory as the directory containing the notebook. This ensures a seamless evaluation process. Following that, the second line establishes the variable \keyword{path} as the current directory, which corresponds to the working directory. The third line designates the path to your Python installation, allowing for appropriate configuration. Lastly, the main notebook is evaluated, with the inclusion of the \keyword{path} variable to locate the correct directory. This approach ensures smooth execution and seamless integration of the required files.
 
-Once this first step is done, one can run a qcmath calculation as follows
+Once this first step is done, one can run a \qcmath calculation as follows
 \begin{lstlisting}[extendedchars=true,language=Mathematica]
-qcmath[molecule_name,basis_set,methods]
+	qcmath[molecule_name,basis_set,methods]
 \end{lstlisting}
-To invoke the qcmath module, use the keyword "qcmath" followed by three arguments. These arguments are either strings or a list of strings. The first argument is the name of the molecule to be studied, represented as a string. For example, in the case of the $\ce{H2}$ molecule, it would be specified as \keyword{"H2"}. The second argument corresponds to the basis set and is also provided as a string. For instance, in the example of the 6-31G basis set, it would be specified as \keyword{"6-31G"}. In summary, taking the example of the $\ce{H2}$ molecule in the 6-31G basis set using the restricted Hartree-Fock method, the qcmath module call would resemble the following code:
+To invoke the \qcmath module, use the keyword \keyword{qcmath} followed by three arguments. These arguments are either strings or a list of strings. The first argument is the name of the molecule to be studied, represented as a string. For example, in the case of the $\ce{H2}$ molecule, it would be specified as \keyword{"H2"}. The second argument corresponds to the basis set and is also provided as a string. For instance, in the example of the 6-31G basis set, it would be specified as \keyword{"6-31g"}. In summary, taking the example of the $\ce{H2}$ molecule in the 6-31G basis set using the restricted Hartree-Fock method, the \qcmath module call would resemble the following code:
 \begin{lstlisting}[extendedchars=true,language=Mathematica]
-qcmath["H2","6-31g",{"RHF"}]
+	qcmath["H2","6-31g",{"RHF"}]
 \end{lstlisting}
-The molecular geometry is provided through a .xyz file located in the \keyword{mol} directory, while the basis set file is stored in the \keyword{basis} directory. Additional options can be specified, such as the charge and spin multiplicity of the molecule. If these options are not explicitly stated, the default values are zero for the charge (neutral) and singlet state for the spin multiplicity.
+\titou{The molecular geometry is provided through a .xyz file located in the \keyword{mol} directory, while the basis set file is stored in the \keyword{basis} directory.} Additional options can be specified, such as the charge and spin multiplicity of the molecule. If these options are not explicitly stated, the default values are zero for the charge (neutral) and singlet state for the spin multiplicity.
 Furthermore, options related to different methods can also be specified, but we will discuss them in the upcoming section. It is worth noting that most of the presented methods offer both spin and spatial orbital implementations. You can choose between them using the keyword \keyword{"spinorbital"}, with the default value being \keyword{False} (indicating spatialorbital as the default choice).
 For a comprehensive list of all available options, including charge, spin multiplicity, and method-related choices, please refer to the \keyword{Main/default\_options.nb} notebook. This notebook presents the options in the form of a dictionary, providing a convenient reference for configuring and customizing the calculations.
 
+%%%%%%%%%%%%%%%%%%%%
 \section{User guide}
-The qcmath software is currently undergoing active development, and while many of the features discussed below are not yet available, they represent the initial roadmap for the software's future. This User Guide provides a comprehensive introduction to the underlying theoretical concepts and showcases the functionalities offered by these methods. It serves as a valuable resource to gain insights into the theoretical background and explore the capabilities that will be incorporated into qcmath as it continues to evolve.
+%%%%%%%%%%%%%%%%%%%%
+The \qcmath software is currently undergoing active development. The features discussed below are currently available, and they represent the initial roadmap for the software's future. This User Guide provides a comprehensive introduction to the underlying theoretical concepts and showcases the functionalities offered by these methods. \cite{SzaboBook,JensenBook,Helgakerbook,MartinBook,FetterBook} It serves as a valuable resource to gain insights into the theoretical background and explore the capabilities that will be incorporated into \qcmath as it continues to evolve.
 
-\subsection{Ground state calculations}
+\subsection{Ground-state calculations}
 
-\subsubsection*{Hartree-Fock}
-In the context of the Hartree-Fock (HF) approximation, the electronic wave function is expressed as a Slater determinant comprising $N$ molecular orbitals (MOs). Within the restricted HF (RHF) formalism, the Roothaan-Hall equations come into play, given by $\FkMat \CMat = \SMat \CMat \MOevMat$. Here, $\FMat$ represents the Fock matrix, $\CMat$ denotes the matrix of MO coefficients, $\SMat$ stands for the matrix representing atomic orbital overlaps, and $\MOevMat$ is a diagonal matrix containing the orbital energies.
-Since the Fock matrix relies on the MO coefficients $\CMat$, which are obtained from the Fock matrix itself, these equations necessitate a self-consistent solution. To facilitate this process, various options can be specified to customize the calculations and achieve desired outcomes: 
+\subsubsection*{Hartree-Fock theory}
+In the context of the Hartree-Fock (HF) approximation, the electronic wave function is expressed as a Slater determinant comprising $N$ one-electron orbitals. \cite{SzaboBook} Within the restricted HF (RHF) formalism, the Roothaan-Hall equations come into play, given by $\FkMat \CMat = \SMat \CMat \MOevMat$. Here, $\FMat$ represents the Fock matrix, $\CMat$ denotes the matrix of orbital coefficients, $\SMat$ stands for the matrix representing atomic orbital overlaps, and $\MOevMat$ is a diagonal matrix containing the orbital energies.
+Since the Fock matrix relies on the orbital coefficients $\CMat$, which are obtained from the Fock matrix itself, these equations necessitate a self-consistent solution. To facilitate this process, various options can be specified to customize the calculations and achieve desired outcomes: 
 \begin{enumerate}
-\item an initial guess for the Fock matrix needs to be diagonalized to give the MO coefficients and this initial guess is described by the keyword \keyword{"guess\_type"}
-\begin{itemize}
-\item \keyword{"guess\_type"$\rightarrow$"core"} (default) corresponds to the core Hamiltonian defined as $\HcMat = \TMat + \VMat$ where $\TMat$ is the kinetic energy matrix and $\VMat$ is the external potential.
-\item \keyword{"guess\_type"$\rightarrow$"huckel"}  corresponds to the H\"uckel Hamiltonian 
-\item \keyword{"guess\_type"$\rightarrow$"random"}  corresponds to random MO coefficients
-\end{itemize}
-\item converging HF calculation
-\begin{itemize}
-\item \keyword{"maxSCF"}: maximum number of iterations, by default \keyword{"maxSCF"$\rightarrow$100}
-\item \keyword{"threshHF"}: threshold for the HF to converge, by default \keyword{"threshHF"$\rightarrow10^{-7}$}
-\item \keyword{"DIIS"}: we can use the Direct Inversion in the Iterative Subspace (DIIS) where the Fock matrix is extrapolated at each iteration using the ones of the previous iterations, by default \keyword{"DIIS"$\rightarrow$True}
-\item \keyword{"n\_DIIS"}: by default \keyword{"n\_DIIS"$\rightarrow$5}
-\item \keyword{"level\_shift"}: a level shift increases the gap between the occupied and virtual orbitals, it can help to converge the SCF process for systems with a small HOMO-LUMO gap, by default \keyword{"level\_shift"$\rightarrow$0.0} \SI{}{eV}
-\end{itemize}
-\item orthogonalization matrix with the keyword \keyword{"ortho\_type"}
-\begin{itemize}
-\item  \keyword{"ortho\_type"$\rightarrow$"lowdin"} (default): L\"owdin orthogonalization 
-\item  \keyword{"ortho\_type"$\rightarrow$"canonical"}: Canonical orthogonalization 
-\end{itemize}
-\item print supplementary information about the calculation with the keyword \keyword{"verbose"}
-\begin{itemize}
-\item \keyword{"verbose"$\rightarrow$False} by default, if \keyword{"verbose"$\rightarrow$True} then more information about the CPU timing and additional quantities are printed. Note that this option is available for most methods in qcmath.
-\end{itemize}
+	\item The initial guess of the Fock matrix that needs to be diagonalized to give the orbital coefficients. This initial guess is described by the keyword \keyword{"guess\_type"}
+    \begin{itemize}
+    	\item \keyword{"guess\_type"="core"} (default) corresponds to the core Hamiltonian defined as $\HcMat = \TMat + \VMat$, where $\TMat$ is the kinetic energy matrix and $\VMat$ is the external potential.
+    	\item \keyword{"guess\_type"="huckel"}  corresponds to the H\"uckel Hamiltonian.
+    	\item \keyword{"guess\_type"="random"}  corresponds to random orbital coefficients.
+    \end{itemize}
+	\item Options to control the convergence of HF calculations
+    \begin{itemize}
+	    \item \keyword{"maxSCF"}: maximum number of iterations, by default \keyword{"maxSCF"=100}
+		\item \keyword{"threshHF"}: convergence threshold on the commutator $\mathbf{F} \mathbf{P} \mathbf{S} - \mathbf{S} \mathbf{P} \mathbf{F}$ where $\mathbf{P}$ is the density matrix, by default \keyword{"threshHF"=$10^{-7}$}
+    	\item \keyword{"DIIS"}: rely on the Direct Inversion in the Iterative Subspace (DIIS) where the Fock matrix is extrapolated at each iteration using the ones of the previous iterations, by default \keyword{"DIIS"=True}
+    	\item \keyword{"n\_DIIS"}: size of the DIIS space, by default \keyword{"n\_DIIS"=5}
+    	\item \keyword{"level\_shift"}: a level shift increases the gap between the occupied and virtual orbitals, it can help to converge the SCF process for systems with a small HOMO-LUMO gap, by default \keyword{"level\_shift"=0.0} \SI{}{eV}.
+    \end{itemize}
+	\item Orthogonalization matrix with the keyword \keyword{"ortho\_type"}
+    \begin{itemize}
+		\item \keyword{"ortho\_type"="lowdin"} (default): L\"owdin orthogonalization.
+	    \item \keyword{"ortho\_type"="canonical"}: Canonical orthogonalization. 
+    \end{itemize}
+	\item Print additional information about the calculation with the keyword \keyword{"verbose"}
+	\begin{itemize}
+		\item \keyword{"verbose"=False} by default, if \keyword{"verbose"=True} then more information about the CPU timing and additional quantities are printed. Note that this option is available for most methods in \qcmath.
+	\end{itemize}
 \end{enumerate}
-Two flavors of Hartree-Fock (HF) are available in qcmath, the restricted HF (RHF) and the unrestricted HF (UHF). We have already seen in the previous section how to run an RHF calculation, for UHF it is very similar and we have to use \keyword{"UHF"}
+Two flavors of Hartree-Fock (HF) are available in qcmath: restricted HF (RHF) and unrestricted HF (UHF). To run a UHF calculation, one simply does
 \begin{lstlisting}[extendedchars=true,language=Mathematica]
-qcmath["H2","6-31g",{"UHF"}]
+	qcmath["H2","6-31g",{"UHF"}]
 \end{lstlisting}
 
-\subsubsection*{M\o{}ller-Plesset (MP) perturbation theory}
-The MP2 correlation energy is defined by 
-%\begin{equation}
-%\EcMP = \frac{1}{4} \sum_{ij}^{\text{occ}} \sum_{ab}^{\text{vir}} \frac{ |\mel{ij}{}{ab}|^2 }{\eHF{i} + \eHF{j} - \eHF{a} - \eHF{b}}
-%\end{equation}
-Since MP2 needs an HF reference, a first HF calculation needs to be done. This is automatically taken into account by qcmath and an MP2 calculation can be done using 
+\subsubsection*{M\o{}ller-Plesset perturbation theory}
+The second-order M\o{}ller-Plesset (MP2) correlation energy is defined by 
+\begin{equation}
+	\EcMP = \frac{1}{4} \sum_{ij}^{\text{occ}} \sum_{ab}^{\text{vir}} \frac{ |\mel{ij}{}{ab}|^2 }{\eHF{i} + \eHF{j} - \eHF{a} - \eHF{b}}
+\end{equation}
+where $\mel{pq}{}{rs} = \braket{pq}{rs} - \braket{pq}{sr}$ are antisymmetrized two-electron integrals in Dirac notations and the $\eHF{p}$'s are the HF orbital energies.
+Since MP2 needs HF quantities, first, a HF calculation needs to be done. This is automatically taken into account by \qcmath and an MP2 calculation can be done using 
 \begin{lstlisting}[extendedchars=true,language=Mathematica]
-qcmath["H2","6-31g",{"RHF","MP2"}]
+	qcmath["H2","6-31g",{"RHF","MP2"}]
 \end{lstlisting}
 or 
 \begin{lstlisting}[extendedchars=true,language=Mathematica]
-qcmath["H2","6-31g",{"MP2"}]
+	qcmath["H2","6-31g",{"MP2"}]
 \end{lstlisting}
-Note that in the last case, a RHF is performed by default so if we want to have a UHF reference we will run
+Note that in the last case, a RHF is performed by default so if one wants to rely on a UHF reference, one has to run
 \begin{lstlisting}[extendedchars=true,language=Mathematica]
-qcmath["H2","6-31g",{"UHF","MP2"}]
+	qcmath["H2","6-31g",{"UHF","MP2"}]
 \end{lstlisting}
+
+\subsubsection*{Configuration interaction methods}
+
+\subsubsection*{Coupled-cluster theory}
+
 
 \subsection{Charged excitations}
 \label{sec:charged_excitations}
-Methods based on the one-body Green's function (1-GF) offer a means to describe charged excitations, namely, the ionization potential (IP) and electron affinity (EA) of a system. This particular aspect forms the heart of qcmath, with a diverse range of methods, approximations, and options available. To ensure clarity and coherence, this section is organized as follows:
+Methods based on the one-body Green's function offer a means to describe charged excitations, namely, the ionization potentials (IPs) and electron affinities (EAs) of a system. This particular aspect forms the heart of qcmath, with a diverse range of methods, approximations, and options available. To ensure clarity and coherence, this section is organized as follows:
 Firstly, we provide a brief introduction to the general equations that depend on the degree of (partial) self-consistency. These general equations are shared among the three self-energy approximations implemented in qcmath: the second-order Green's function (GF2), the $GW$ approximation, and the $T$-matrix approximation. By outlining these common equations, we establish a foundational understanding of the framework.
 Subsequently, we present the specific expressions corresponding to each of the self-energy approximations. This breakdown allows for a comprehensive exploration of the distinct methodologies incorporated in qcmath, enabling users to leverage the most suitable approach for their research goals.
 
@@ -312,7 +346,7 @@ where $\nu$ runs overall solutions, quasiparticles, and satellites and with \cit
 \end{equation}
 Note that the different blocks will depend on the approximated self-energy. Now that the general equations have been set, we can turn to the self-energy approximations. Three different approximations are available in qcmath: the second-order Green's function (\GFtwo), the {\GW} approximation, and the T-matrix approximation. For each approximation the three partially self-consistent schemes and the upfolding process are available. Note also that, regularization parameters are available in qcmath.
  
-\subsubsection*{Second-order Green's function (GF2) approximation}
+\subsubsection*{Second-order Green's function approximation}
 The {\GFtwo} correlation self-energy is closely related to MP2 and is given by the following expression
 \begin{equation}
 \label{eq:SigCGF2}
@@ -333,7 +367,7 @@ Keywords need to be specified for the different schemes:
 
 Example of a one-shot calculation
 \begin{lstlisting}[extendedchars=true,language=Mathematica]
-qcmath["H2","6-31g",{"G0F2"}]
+	qcmath["H2","6-31g",{"G0F2"}]
 \end{lstlisting}
 Note that here, an RHF calculation is done by default.
 
@@ -359,7 +393,7 @@ Keywords for the method argument need to be specified for the different schemes:
 
 Example of an eigenvalue calculation
 \begin{lstlisting}[extendedchars=true,language=Mathematica]
-qcmath["H2","6-31g",{"evGW"}]
+	qcmath["H2","6-31g",{"evGW"}]
 \end{lstlisting}
 Note that here, an RHF calculation is done by default.
 
@@ -392,17 +426,17 @@ Keywords for the method argument need to be specified for the different schemes:
 \end{itemize}
 Example of a quasiparticle calculation
 \begin{lstlisting}[extendedchars=true,language=Mathematica]
-qcmath["H2","6-31g",{"qsGT"}]
+	qcmath["H2","6-31g",{"qsGT"}]
 \end{lstlisting}
 Note that here, an RHF calculation is done by default.
 
 \subsection{Neutral excitations}
 
-Within qcmath, the computation of excitation energies utilizes methods formulated as a Casida-like equation.\cite{Casida_2005} This equation is an eigenvalue equation that serves as a fundamental component in linear response theory. It plays a pivotal role in various approaches, including time-dependent density functional theory (TD-DFT), the random phase approximation (RPA), and the Bethe-Salpeter equation (BSE).
+Within qcmath, the computation of excitation energies utilizes methods formulated as a Casida-like equation.\cite{Casida_2005} This equation is an eigenvalue equation that serves as a fundamental component in linear response theory. It plays a pivotal role in various approaches, including time-dependent density functional theory (TD-DFT), \cite{UlrichBook} the random phase approximation (RPA), and the Bethe-Salpeter equation (BSE). \cite{MartinBook}
 In this section, we begin by exploring the RPA method and distinguishing between different variations within this framework. By examining these different flavors of the RPA method, we gain insights into their unique characteristics and applicability.
 Subsequently, we delve into the discussion of the BSE method. This method represents another important approach for computing excitation energies, with its distinct theoretical foundations and computational considerations. By exploring the BSE method, users can gain a comprehensive understanding of its principles and its role within qcmath. Note that when the spatial orbital implementation of a method is available, then we can use the \keyword{"singlet"} and/or \keyword{"triplet"} keywords to compute only singlet and/or triplet states.
 
-\subsubsection*{Particle-hole random-phase approximation (ph-RPA)}
+\subsubsection*{Particle-hole random-phase approximation}
 \label{subsec:ph-RPA}
 
 The traditional RPA can be found under different names like RPAx or ph-RPA. We choose to call it ph-RPA to make the difference with the particle-particle RPA (pp-RPA). The ph-RPA problem takes the form of the following Casida-like equation 
@@ -453,9 +487,9 @@ Keywords for the method argument need to be specified for the different approach
 \item \keyword{"RPAx"}: run a ph-RPA calculation
 \item \keyword{"RPA"}: run a ph-dRPA calculation
 \end{itemize}
-The option \keyword{"TDA"} can be set to \keyword{True}, by default \keyword{"TDA"$\rightarrow$False}.
+The option \keyword{"TDA"} can be set to \keyword{True}, by default \keyword{"TDA"=False}.
 
-\subsubsection*{Particle-particle random-phase approximation (pp-RPA)}
+\subsubsection*{Particle-particle random-phase approximation}
 \label{subsec:pp-RPA}
 
 The particle-particle RPA (pp-RPA) problem considers the excitation energies of the $N+2$ and $N-2$ system (with $N$ the number of electrons). It is also defined by a slightly different eigenvalue problem than ph-RPA:
@@ -503,10 +537,10 @@ The $\bX^{\pp/\hh}$ and $\bY^{\pp/\hh}$ are the double addition/removal transiti
 \begin{equation}
 \EcppRPA =  \frac{1}{2} \qty(\sum_n \Omega_n^{\pp}  - \sum_n \Omega_n^{\hh}  - \text{Tr}\bm{C}^{\pp} - \text{Tr}\bm{D}^{\hh})
 \end{equation}
-The keyword to use the pp-RPA is \keyword{pp-RPA}. Note that TDA is also available with the option \keyword{"TDA"$\rightarrow$True}.
+The keyword to use the pp-RPA is \keyword{pp-RPA}. Note that TDA is also available with the option \keyword{"TDA"=True}.
 
-\subsubsection*{Bethe-Salpeter equation (BSE)}
-The Bethe-Salpeter equation (BSE) is related to the two-body Green's function (2-GF). The central quantity is the so-called BSE kernel defined as the functional derivative of the self-energy with respect to the 1-GF. As exposed in Section~\ref{sec:charged_excitations}, there are several approximations of the self-energy and each one of them leads to a different BSE approximation. The common central equation is the following eigenvalue equation
+\subsubsection*{Bethe-Salpeter equation}
+The Bethe-Salpeter equation (BSE) is related to the two-body Green's function. The central quantity is the so-called BSE kernel defined as the functional derivative of the self-energy with respect to $G$. As exposed in Section~\ref{sec:charged_excitations}, there are several approximations of the self-energy and each one of them leads to a different BSE approximation. The common central equation is the following eigenvalue equation
 \begin{equation}
     \begin{pmatrix}
     	\bA^{\BSE} & \bB^{\BSE} 
@@ -527,29 +561,31 @@ The Bethe-Salpeter equation (BSE) is related to the two-body Green's function (2
 		\bY_{m}^{\BSE}
 	\end{pmatrix}
 \end{equation}
-where the BSE matrix elements depend on the choice of the BSE kernel (see Chapter \ref{chap:5}). To run a BSE calculation we have first to specify the approximation for the self-energy with the method argument and the keyword for this option is \keyword{"BSE"$\rightarrow$True}. Note that in general a BSE calculation is done in the static approximation, which is the equivalent of the adiabatic approximation in TD-DFT. It is possible to take into account dynamical effects using first-order perturbation theory \cite{Loos_2020h} using the option \keyword{"dBSE"$\rightarrow$True}. This dynamical correction is applicable for all the different BSE kernels available in qcmath. Note that this dynamical correction is only available in TDA with the option \keyword{"dTDA"}.
+where the BSE matrix elements depend on the choice of the BSE kernel (see Chapter \ref{chap:5}). To run a BSE calculation we have first to specify the approximation for the self-energy with the method argument and the keyword for this option is \keyword{"BSE"=True}. Note that in general a BSE calculation is done in the static approximation, which is the equivalent of the adiabatic approximation in TD-DFT. It is possible to take into account dynamical effects using first-order perturbation theory \cite{Loos_2020h} using the option \keyword{"dBSE"=True}. This dynamical correction is applicable for all the different BSE kernels available in qcmath. Note that this dynamical correction is only available in TDA with the option \keyword{"dTDA"}.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Programmer guide}
-As mentioned in the first section, one of the primary objectives of qcmath is to enable newcomers in quantum chemistry to explore and advance their ideas through coding. Therefore, it is crucial to provide them with the ability to incorporate their methods into qcmath. To facilitate this process, we have developed a notebook example called \keyword{module\_example.nb} to guide users step-by-step. The following outlines the different stages involved in adding a new method to qcmath:
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+As mentioned in the first section, one of the primary objectives of \qcmath is to enable newcomers in quantum chemistry to explore and advance their ideas through coding. Therefore, it is crucial to provide them with the ability to incorporate their methods into \qcmath. To facilitate this process, we have developed a notebook example called \keyword{module\_example.nb} to guide users step-by-step. The following outlines the different stages involved in adding a new method to \qcmath:
 \begin{enumerate}
-\item The new method needs to be implemented in its notebook
-\item add your method in the \keyword{src/utils/list\_method.nb} and specify the dependencies (ex: if post-HF method then dependency=\keyword{"RHF"})
-\item add default options in \keyword{src/Main/default\_options.nb} if needed
-\item add a call to your method in \keyword{src/Main/Main.nb} as
-\begin{lstlisting}[extendedchars=true,language=Mathematica]
-NameNewMethod="NameNewMethod"
-If[ToDoModules[NameNewMethod]["Do"] == True,
-  NotebookEvaluate[path<>"/src/"<>NameNewMethod<>".nb"];
-\end{lstlisting}
-\begin{lstlisting}[extendedchars=true,language=Mathematica]
-PrintTemporary[Style[NameNewMethod<>" calculation...", Bold, Orange]];
-{time, outputsNewMethod} = Timing[NewMethod[arguments, options]];	
-\end{lstlisting}
-\begin{lstlisting}[extendedchars=true,language=Mathematica]
-If[verbose == True, 
-  Print["CPU time for "<>NameNewMethod<>" calculation= ", time]];
-];
-\end{lstlisting}
+	\item The new method needs to be implemented in its notebook.
+	\item add your method in the \keyword{src/utils/list\_method.nb} and specify the dependencies. For example, if a new post-HF method is proposed, then one has to add \keyword{"RHF"} or \keyword{"UHF"} as a dependency.
+	\item add default options in \keyword{src/Main/default\_options.nb} if needed.
+	\item add a call to your method in \keyword{src/Main/Main.nb} as
+    \begin{lstlisting}[extendedchars=true,language=Mathematica]
+    NameNewMethod="NameNewMethod"
+    If[ToDoModules[NameNewMethod]["Do"] == True,
+      NotebookEvaluate[path<>"/src/"<>NameNewMethod<>".nb"];
+    \end{lstlisting}
+    \begin{lstlisting}[extendedchars=true,language=Mathematica]
+    PrintTemporary[Style[NameNewMethod<>" calculation...", Bold, Orange]];
+    {time, outputsNewMethod} = Timing[NewMethod[arguments, options]];	
+    \end{lstlisting}
+    \begin{lstlisting}[extendedchars=true,language=Mathematica]
+    If[verbose == True, 
+      Print["CPU time for "<>NameNewMethod<>" calculation= ", time]];
+    ];
+    \end{lstlisting}
 \end{enumerate}
 For each new method notebook, it is essential to organize the code into potentially three modules. The first module is responsible for reading the input and options, followed by invoking either the spin or spatial orbitals module, and ultimately returning the corresponding output. The remaining two modules are dedicated to implementing the new method in spin and spatial orbitals, respectively. It is important to note that if your method is exclusively implemented in spatial orbitals, your notebook will consist of only two parts. Further details regarding this structure can be found in the \keyword{module\_example.nb} notebook.
 
