@@ -152,7 +152,7 @@
 
 \begin{document}	
 
-\title{\textsc{qcmath}: Mathematica modules for electronic structure calculations}
+\title{QCMATH: Mathematica modules for electronic structure calculations}
 
 \author{Enzo \surname{Monino}}
 	\email{emonino@irsamc.ups-tlse.fr}
@@ -717,6 +717,13 @@ As mentioned in the first section, one of the primary objectives of \qcmath is t
 	];
 \end{lstlisting}
 For each new method notebook, it is essential to organize the code into potentially three modules. The first module is responsible for reading the input and options, followed by invoking either the spin or spatial orbitals module, and ultimately returning the corresponding output. The remaining two modules are dedicated to implementing the new method in spin and spatial orbitals, respectively. It is important to note that if your method is exclusively implemented in spatial orbitals, your notebook will consist of only two parts. Further details regarding this structure can be found in the \keyword{module\_example.nb} notebook.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Conclusion and Perspectives}
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+Here, we have presented the current capabilities of \qcmath, a set of \mathematica modules to perform electronic structure calculations.
+We hope to implement new methods in the near future, especially at the equation-of-motion CC level where our group has recently designed an automatic equation generator based on \mathematica, named \href{https://github.com/rquintero-88/eomccgen}{\textsc{eomccgen}}. \cite{eomccgen}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 \bibliography{qcmath_manual}
