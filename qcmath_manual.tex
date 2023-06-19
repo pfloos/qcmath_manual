@@ -334,6 +334,11 @@ For example, when only singles and doubles are taken into account, the method is
 It recovers an important chunk of the correlation.
 However, it has the disadvantage to be size-inconsistent.\footnote{A method is said to be size-consistent if the correlation energy of two non-interaction systems is egal to twice the correlation energy of the isolated system.
 Size-extensivity means that the correlation energy grows linearly with the system size.}
+Two CI methods are available in qcmath, the FCI and CISD methods. To run these calculations, method keyword need to be specified:
+\begin{itemize}
+\item \keyword{"CISD"}: run a CISD calculation
+\item \keyword{"FCI"}: run a FCI calculation
+\end{itemize}
 
 %--------------------------------------
 \subsubsection*{Coupled-cluster theory}
@@ -408,6 +413,17 @@ In contrast, its variational counterpart, denoted as VCC, is given by:
 \end{equation}
 where the Rayleigh-Ritz variational principle is used to determine the energy and amplitudes. The VCC energy provides an upper bound to the exact FCI energy $E_\text{FCI}$. Unfortunately, VCC is computationally intractable. Even for truncated CC methods like CCSD, VCC exhibits factorial complexity because the power series expansion of the VCC energy \eqref{eq:VCC} does not naturally terminate before reaching the $N$-electron limit.
 
+For now, three CC calculations are available in qcmath, the pCCD and CCSD methods for ground-state calculation and the EOM-CCSD method for excited-state calculations.To run these calculations,  method keywords need to be specified:
+\begin{itemize}
+\item \keyword{"pCCD"}: run a pCCD calculation
+\item \keyword{"CCSD"}: run a CCSD calculation
+\item \keyword{"EOMCCSD"}: run an EOM-CCSD calculation
+\end{itemize}
+Moreover, two options are also available:
+\begin{itemize}
+\item \keyword{"max\_SCF\_CC"}: maximum number of iterations for CC calculations
+\item \keyword{"thresh\_CC"}: convergence threshold of the maximum absolute value between the residuals
+\end{itemize}
 
 %===============================
 \subsection{Charged excitations}
@@ -695,7 +711,7 @@ where the BSE matrix elements depend on the choice of the BSE kernel. To run a B
 %%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Programmer guide}
 %%%%%%%%%%%%%%%%%%%%%%%%%%
-As mentioned in the first section, one of the primary objectives of \qcmath is to enable newcomers in quantum chemistry to explore and advance their ideas through coding. Therefore, it is crucial to provide them with the ability to incorporate their methods into \qcmath. To facilitate this process, we have developed a notebook example called \keyword{module\_example.nb} to guide users step-by-step. The following outlines the different stages involved in adding a new method to \qcmath:
+As mentioned in the first section, one of the primary objectives of \qcmath is to enable newcomers in quantum chemistry to explore and advance their ideas through coding. Therefore, it is crucial to allow them to incorporate their methods into \qcmath. To facilitate this process, we have developed a notebook example called \keyword{module\_example.nb} to guide users step-by-step. The following outlines the different stages involved in adding a new method to \qcmath:
 \begin{enumerate}
 	\item The new method needs to be implemented in its notebook.
 	\item add your method in the \keyword{src/utils/list\_method.nb} and specify the dependencies. For example, if a new post-HF method is proposed, then one has to add \keyword{"RHF"} or \keyword{"UHF"} as a dependency.
