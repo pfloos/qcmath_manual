@@ -235,6 +235,12 @@ To invoke the \qcmath module, use the keyword \keyword{qcmath} followed by three
 \end{lstlisting}
 \titou{The molecular geometry is provided through a .xyz file located in the \keyword{mol} directory, while the basis set file is stored in the \keyword{basis} directory.} 
 \PFL{Could someone add the other possibility of entering directly the geometry in the notebook?}
+\enzo{It is also possible to enter directly the geometry of the molecule as an input. Here is an exemple for the \ce{H2} molecule:}
+\begin{lstlisting}[extendedchars=true,language=Mathematica]
+	qcmath[{{"H",0.0,0.0,0.0},{"H",0.0,0.0,1.0}},"6-31g",{"RHF"}]
+\end{lstlisting}
+\enzo{It is important to first, specify the atom as a string and then, the x, y and z coordinates.}
+
 Additional options can be specified, such as the charge and spin multiplicity of the molecule. If these options are not explicitly stated, the default values are zero for the charge (neutral) and singlet state for the spin multiplicity.
 Furthermore, options related to different methods can also be specified, but we will discuss them in the upcoming section. It is worth noting that most of the presented methods offer both spin and spatial orbital implementations. You can choose between them using the keyword \keyword{"spinorbital"}, with the default value being \keyword{False} (indicating spatialorbital as the default choice).
 For a comprehensive list of all available options, including charge, spin multiplicity, and method-related choices, please refer to the \keyword{Main/default\_options.nb} notebook. This notebook presents the options in the form of a dictionary, providing a convenient reference for configuring and customizing the calculations.
