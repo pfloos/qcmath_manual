@@ -419,8 +419,14 @@ In contrast, its variational counterpart, denoted as VCC, is given by:
 \end{equation}
 where the Rayleigh-Ritz variational principle is used to determine the energy and amplitudes. The VCC energy provides an upper bound to the exact FCI energy $E_\text{FCI}$. Unfortunately, VCC is computationally intractable. Even for truncated CC methods like CCSD, VCC exhibits factorial complexity because the power series expansion of the VCC energy \eqref{eq:VCC} does not naturally terminate before reaching the $N$-electron limit.
 
-For now, three CC calculations are available in qcmath, the pCCD and CCSD methods for ground-state calculation and the EOM-CCSD method for excited-state calculations.To run these calculations,  method keywords need to be specified:
+
+Various CC schemes are available in qcmath, for ground-state calculations the DCD, drCCD, rCCD, lCCD, crCCD and pCCD. For excited-state calculations, the EOM-CCSD method for excited-state calculations is available. To run these calculations,  method keywords need to be specified:
 \begin{itemize}
+\item \keyword{"DCD"}: run a DCD calculation
+\item \keyword{"drCCD"}: run a drCCD calculation
+\item \keyword{"rCCD"}: run a rCCD calculation
+\item \keyword{"lCCD"}: run a lCCD calculation
+\item \keyword{"crCCD"}: run a crCCD calculation
 \item \keyword{"pCCD"}: run a pCCD calculation
 \item \keyword{"CCSD"}: run a CCSD calculation
 \item \keyword{"EOMCCSD"}: run an EOM-CCSD calculation
